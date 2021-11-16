@@ -4,7 +4,7 @@
 # Combination of the Glide and Helm scripts, with my own tweaks.
 
 PROJECT_NAME="helm-ssm"
-PROJECT_GH="codacy/$PROJECT_NAME"
+PROJECT_GH="mf-lit/$PROJECT_NAME"
 eval $(helm env)
 
 if [[ $SKIP_BIN_INSTALL == "1" ]]; then
@@ -59,7 +59,11 @@ getDownloadURL() {
   # Use the GitHub API to find the latest version for this project.
   local latest_url="https://api.github.com/repos/$PROJECT_GH/releases/latest"
   if type "curl" > /dev/null; then
-    DOWNLOAD_URL=$(curl -s $latest_url | grep $OS | awk '/"browser_download_url":/{gsub( /[,"]/,"", $2); print $2}')
+    if [ "${OS}-${ARCH}" == "linux-amd64" ] ; then
+      DOWNLOAD_URL=$(curl -s $latest_url | grep $OS | grep -v arm | awk '/"browser_download_url":/{gsub( /[,"]/,"", $2); print $2}')
+    else
+      DOWNLOAD_URL=$(curl -s $latest_url | grep $OS | awk '/"browser_download_url":/{gsub( /[,"]/,"", $2); print $2}')
+    fi
   elif type "wget" > /dev/null; then
     DOWNLOAD_URL=$(wget -q -O - $latest_url | awk '/"browser_download_url":/{gsub( /[,"]/,"", $2); print $2}')
   fi
