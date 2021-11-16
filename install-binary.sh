@@ -57,6 +57,7 @@ verifySupported() {
 # getDownloadURL checks the latest available version.
 getDownloadURL() {
   # Use the GitHub API to find the latest version for this project.
+  set -x
   local latest_url="https://api.github.com/repos/$PROJECT_GH/releases/latest"
   if type "curl" > /dev/null; then
     if [ "${OS}-${ARCH}" == "linux-amd64" ] ; then
